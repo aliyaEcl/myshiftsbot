@@ -1,1 +1,1 @@
-# myshiftsbot
+# http://t.me/myshiftsbot

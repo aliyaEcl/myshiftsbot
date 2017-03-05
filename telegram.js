@@ -1,6 +1,13 @@
 var TelegramBot = require('node-telegram-bot-api');
-var token = '361031563:AAFln9GZdpowS9yQEdbYwQVZUGu-wug9aYA';
-var bot = new TelegramBot(token, {polling: true});
+const TOKEN = process.env.TELEGRAM_TOKEN || '361031563:AAFln9GZdpowS9yQEdbYwQVZUGu-wug9aYA';
+const options = {
+  webHook: {
+    port: process.env.PORT
+  }
+};
+const url = process.env.APP_URL || 'https://myshiftsbot.herokuapp.com/:443';
+const bot = new TelegramBot(TOKEN, options);
+bot.setWebHook(`${url}/bot${TOKEN}`);
 var shift = require('./shifts');
 
 bot.onText(/\/today/, function (msg, match) {
