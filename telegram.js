@@ -13,7 +13,7 @@ var shift = require('./shifts');
 bot.onText(/\/today/, function (msg, match) {
 
     var chatId = msg.chat.id,
-        msg_date = new Date(msg.date*1000),
+        msg_date = new Date(msg.date*1000+18000000),
     	text = 'Сегодня Нурич '+shift.nurich(new Date(msg_date))+', а папа '+shift.papa(new Date(msg_date));
 
     bot.sendMessage(chatId, text);
