@@ -13,14 +13,15 @@ var shift = require('./shifts');
 bot.onText(/\/today/, function (msg, match) {
 
     var chatId = msg.chat.id,
-    	text = 'Сегодня Нурич '+shift.nurich(new Date())+', а папа '+shift.papa(new Date());
+        msg_date = new Date(msg.date*1000),
+    	text = 'Сегодня Нурич '+shift.nurich(new Date(msg_date))+', а папа '+shift.papa(new Date(msg_date));
 
     bot.sendMessage(chatId, text);
 
     var sender_info = msg.from.first_name+' '+msg.from.last_name+' in ';
     sender_info = msg.chat.type == "group" ? sender_info + msg.chat.title : sender_info + 'private chat';
 
-    console.log('command /today from '+sender_info);
+    console.log('command /today from '+sender_info+' at '+msg_date);
 });
 
 bot.onText(/\/date/, function (msg, match) {
