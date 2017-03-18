@@ -12,7 +12,7 @@ var papa = function(date) {
 				 false - papa
 */
 function person (date, person) {
-	var target_date = (typeof date =='string') ? new Date(convertDate(date)) : new Date(), 
+	var target_date = (typeof date =='string') ? new Date(convertDate(date)) : date, 
 		shift = getShift(target_date),
 		shift2 = shift==3 ? 0 : shift+1;
 	return person ? shift : shift2;
