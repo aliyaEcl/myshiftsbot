@@ -1,4 +1,7 @@
+var fs = require('fs');
+
 var shifts = ['с утра','в ночь','с ночи','выходной'];
+var short_shifts = [' у','вн','сн','вх'];
 
 var nurich = function(date) {
 	return shifts[person(date,true)];
@@ -49,5 +52,81 @@ function getShift(date){
 	return shift;
 }
 
+var createDoc = function(file_name,date1,date2) {
+
+	date1 = new Date(convertDate(date1));
+	date2 = new Date(convertDate(date2));
+
+	fs.writeFileSync(file_name, '');
+
+	if ((date2 - date1)/86400000 > 31 || (date2 - date1)/86400000 < 2 || date1>date2) return false;
+
+	var months = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь',];
+	var days = 'пн|вт|ср|чт|пт|сб|вс|';
+	var dash = '---------------------';
+	var init_text = months[date1.getMonth()]+' '+date1.getFullYear()+'\r\n\r\n'+days+'\r\n';
+
+	fs.appendFileSync(file_name,init_text);
+
+
+	var shift;
+	var date3 = date1;
+
+	var spaces = '';
+
+	var k = date1.getDay();
+
+	if (k>0){
+		while (k-- >1) spaces += '  |';
+	} else {
+		spaces = '  |  |  |  |  |  |';
+	}
+
+	var text_dates = '';
+	var text_shifts = '';
+	var isSunday ='';
+
+	while (date2 >= date3) {
+
+		shift = getShift(date3);
+
+		if (date3.getMonth() != date1.getMonth()) {
+			date1 = date3;
+			fs.appendFileSync(file_name, dash+'\r\n'+spaces+text_dates+'\r\n');
+			fs.appendFileSync(file_name,            spaces+text_shifts+'\r\n');
+			text_dates = '';
+			text_shifts = '';
+			fs.appendFileSync(file_name, '\r\n'+months[date1.getMonth()]+' '+date1.getFullYear()+'\r\n\r\n'+days+'\r\n');
+			k = date1.getDay();
+			if (k>0){
+				while (k-- >1) spaces += '  |';
+			} else {
+				spaces = '  |  |  |  |  |  |';
+			}
+		}
+
+		text_dates += (date3.getDate()<10 ? '0'+date3.getDate() : date3.getDate())+'|';
+		text_shifts += short_shifts[shift]+'|';
+
+		if (date3.getDay()==0) {
+			fs.appendFileSync(file_name, dash+'\r\n'+spaces+text_dates+'\r\n');
+			fs.appendFileSync(file_name,            spaces+text_shifts+'\r\n');
+			text_dates = '';
+			text_shifts = '';
+			spaces = '';
+		} 
+
+		date3 = new Date(date3.valueOf() + 86400000);
+	}
+
+	fs.appendFileSync(file_name, dash+'\r\n'+spaces+text_dates+'\r\n');
+	fs.appendFileSync(file_name,            spaces+text_shifts+'\r\n');
+
+
+	return true;
+
+}
+
 module.exports.nurich = nurich;
 module.exports.papa = papa;
+module.exports.createDoc = createDoc;
