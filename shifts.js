@@ -61,8 +61,8 @@ var createDoc = function(file_name,date1,date2) {
 
 	if ((date2 - date1)/86400000 > 31 || 
 		(date2 - date1)/86400000 < 2 || 
-		date1>date2 || typeof date1 !=Date || 
-		typeof date2 !=Date) 
+		date1>date2 || date1 == 'Invalid Date' || 
+		date2 =='Invalid Date') 
 			{return false;}
 
 	var months = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь',];
