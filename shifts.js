@@ -59,12 +59,16 @@ var createDoc = function(file_name,date1,date2) {
 
 	fs.writeFileSync(file_name, '');
 
-	if ((date2 - date1)/86400000 > 31 || (date2 - date1)/86400000 < 2 || date1>date2) return false;
+	if ((date2 - date1)/86400000 > 31 || 
+		(date2 - date1)/86400000 < 2 || 
+		date1>date2 || typeof date1 !=Date || 
+		typeof date2 !=Date) 
+			{return false;}
 
 	var months = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь',];
-	var days = 'пн|вт|ср|чт|пт|сб|вс|';
+	var week = 'пн|вт|ср|чт|пт|сб|вс|';
 	var dash = '---------------------';
-	var init_text = months[date1.getMonth()]+' '+date1.getFullYear()+'\r\n\r\n'+days+'\r\n';
+	var init_text = months[date1.getMonth()]+' '+date1.getFullYear()+'\r\n\r\n'+week+'\r\n';
 
 	fs.appendFileSync(file_name,init_text);
 
@@ -96,7 +100,7 @@ var createDoc = function(file_name,date1,date2) {
 			fs.appendFileSync(file_name,            spaces+text_shifts+'\r\n');
 			text_dates = '';
 			text_shifts = '';
-			fs.appendFileSync(file_name, '\r\n'+months[date1.getMonth()]+' '+date1.getFullYear()+'\r\n\r\n'+days+'\r\n');
+			fs.appendFileSync(file_name, '\r\n'+months[date1.getMonth()]+' '+date1.getFullYear()+'\r\n\r\n'+week+'\r\n');
 			k = date1.getDay();
 			if (k>0){
 				while (k-- >1) spaces += '  |';
