@@ -68,6 +68,9 @@ bot.onText(/^\d{1,2}\.\d{1,2}\.\d{1,4}$/, function (msg, match) {
 });
 
 bot.onText(/^\d{1,2}\.\d{1,2}\.\d{1,4}-\d{1,2}\.\d{1,2}\.\d{1,4}$/, function (msg, match) {
+    var dates = match[0].split('-');
+    var date1 = new Date(shift.convertDate(dates[0])),
+        date2 = new Date(shift.convertDate(dates[1]));
 
     var options = {
         reply_markup: JSON.stringify({
@@ -78,12 +81,25 @@ bot.onText(/^\d{1,2}\.\d{1,2}\.\d{1,4}-\d{1,2}\.\d{1,2}\.\d{1,4}$/, function (ms
         })
     };
 
-    bot.sendMessage(msg.chat.id, 'Выберите бригаду', options);
+    if ((date2 - date1)/86400000 > 31) {
+        bot.sendMessage(msg.chat.id, 'Период должен быть не более 31 дня');
+    } else
+        if (date1>date2) {
+            bot.sendMessage(msg.chat.id, 'Неверный период. Начальная дата должна быть раньше конечной');
+        } else
+            if ((date2 - date1)/86400000 < 2) {
+                bot.sendMessage(msg.chat.id, 'Период должен быть более 1 дня. Чтобы узнать смену на конкретную дату, воспользуйтесь командой /date');
+            } else
+                if (date1 == 'Invalid Date' || date2 == 'Invalid Date') {
+                    bot.sendMessage(msg.chat.id, 'Неверные даты');
+                } else {
+                        bot.sendMessage(msg.chat.id, 'Выберите бригаду', options);
+                }
 });
 
 bot.on('callback_query', function (msg) {
 
-    var chatId = msg.from.id,
+    var chatId = msg.message.chat.id,
         data = msg.data.split('-'),
         file_name = 'shifts.txt',
         doc = `${__dirname}/`+file_name;
@@ -92,15 +108,11 @@ bot.on('callback_query', function (msg) {
 
     var name = isNurich ? 'Нурича' : 'папы';
 
-    var check = shift.createDoc(file_name, data[0], data[1], isNurich);
+    shift.createDoc(file_name, data[0], data[1], isNurich);
 
-    if (check) {
-        bot.sendDocument(chatId,doc,{
-            caption: 'график '+name+' на '+data[0]+'-'+data[1]
-        });
-    } else {
-        bot.sendMessage(chatId, 'что-то пошло не так');
-    }
+    bot.sendDocument(chatId,doc,{
+        caption: 'график '+name+' на '+data[0]+'-'+data[1]
+    });
 });
 
 bot.onText(/\/help/, function (msg, match) {

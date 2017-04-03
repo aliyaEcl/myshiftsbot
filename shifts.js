@@ -52,18 +52,12 @@ function getShift(date){
 	return shift;
 }
 
-var createDoc = function(file_name,date1,date2,person) {
+function createDoc (file_name,date1,date2,person) {
 
 	date1 = new Date(convertDate(date1));
 	date2 = new Date(convertDate(date2));
 
 	fs.writeFileSync(file_name, '');
-
-	if ((date2 - date1)/86400000 > 31 || 
-		(date2 - date1)/86400000 < 2 || 
-		date1>date2 || date1 == 'Invalid Date' || 
-		date2 =='Invalid Date') 
-			{return false;}
 
 	var months = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь',];
 	var week = 'пн|вт|ср|чт|пт|сб|вс|';
@@ -125,12 +119,9 @@ var createDoc = function(file_name,date1,date2,person) {
 
 	fs.appendFileSync(file_name, dash+'\r\n'+spaces+text_dates+'\r\n');
 	fs.appendFileSync(file_name,            spaces+text_shifts+'\r\n');
-
-
-	return true;
-
 }
 
 module.exports.nurich = nurich;
 module.exports.papa = papa;
 module.exports.createDoc = createDoc;
+module.exports.convertDate = convertDate;
