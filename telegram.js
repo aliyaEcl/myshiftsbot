@@ -41,7 +41,7 @@ bot.onText(/\/date/, function (msg, match) {
 bot.onText(/\/period/, function (msg, match) {
 
     var chatId = msg.chat.id,
-        text = 'Введите период в формате dd.MM.yyyy-dd.MM.yyyy, не более 31 дня. Работает пока только для Нурича.';
+        text = 'Введите период в формате dd.MM.yyyy-dd.MM.yyyy, не более 31 дня.';
 
     bot.sendMessage(chatId, text);
 
@@ -69,17 +69,34 @@ bot.onText(/^\d{1,2}\.\d{1,2}\.\d{1,4}$/, function (msg, match) {
 
 bot.onText(/^\d{1,2}\.\d{1,2}\.\d{1,4}-\d{1,2}\.\d{1,2}\.\d{1,4}$/, function (msg, match) {
 
-    var chatId = msg.chat.id,
+    var options = {
+        reply_markup: JSON.stringify({
+            inline_keyboard: [
+                [{ text: 'Бригада Нурича', callback_data: match[0]+'-1' }],
+                [{ text: 'Бригада папы', callback_data: match[0]+'-2' }]
+            ]
+        })
+    };
+
+    bot.sendMessage(msg.chat.id, 'Выберите бригаду', options);
+});
+
+bot.on('callback_query', function (msg) {
+
+    var chatId = msg.from.id,
+        data = msg.data.split('-'),
         file_name = 'shifts.txt',
-        dates = match[0].split('-');
         doc = `${__dirname}/`+file_name;
 
-        
-    var check = shift.createDoc(file_name,dates[0],dates[1]);
+    var isNurich = (data[2]=='1') ? true : false;
+
+    var name = isNurich ? 'Нурича' : 'папы';
+
+    var check = shift.createDoc(file_name, data[0], data[1], isNurich);
 
     if (check) {
         bot.sendDocument(chatId,doc,{
-            caption: "график Нурича на "+match[0]
+            caption: 'график '+name+' на '+data[0]+'-'+data[1]
         });
     } else {
         bot.sendMessage(chatId, 'что-то пошло не так');
@@ -94,7 +111,7 @@ bot.onText(/\/help/, function (msg, match) {
     			'/date - по сути позволяет узнать формат вводимой даты. Дату можно ввести и без этой команды. '
                 +'Валидный формат dd.MM.yyyy'+'\r\n'+
                 '/period - по сути позволяет узнать формат вводимого периода. Период можно ввести и без этой команды. '
-    			+'Валидный формат dd.MM.yyyy-dd.MM.yyyy. Период должен быть не более 31 дня. Работает пока только для Нурича.';
+    			+'Валидный формат dd.MM.yyyy-dd.MM.yyyy. Период должен быть не более 31 дня.';
 
     bot.sendMessage(chatId, text);
 

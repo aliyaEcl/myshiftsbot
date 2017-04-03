@@ -14,7 +14,7 @@ var papa = function(date) {
 /* @param person true - nurich
 				 false - papa
 */
-function person (date, person) {
+function getPerson (date, person) {
 	var target_date = (typeof date =='string') ? new Date(convertDate(date)) : date, 
 		shift = getShift(target_date),
 		shift2 = shift==3 ? 0 : shift+1;
@@ -52,7 +52,7 @@ function getShift(date){
 	return shift;
 }
 
-var createDoc = function(file_name,date1,date2) {
+var createDoc = function(file_name,date1,date2,person) {
 
 	date1 = new Date(convertDate(date1));
 	date2 = new Date(convertDate(date2));
@@ -92,7 +92,7 @@ var createDoc = function(file_name,date1,date2) {
 
 	while (date2 >= date3) {
 
-		shift = getShift(date3);
+		shift = getPerson(date3,person);
 
 		if (date3.getMonth() != date1.getMonth()) {
 			date1 = date3;
