@@ -4,11 +4,11 @@ var shifts = ['с утра','в ночь','с ночи','выходной'];
 var short_shifts = [' у','вн','сн','вх'];
 
 var nurich = function(date) {
-	return shifts[person(date,true)];
+	return shifts[getPerson(date,true)];
 }
 
 var papa = function(date) {
-	return shifts[person(date,false)];
+	return shifts[getPerson(date,false)];
 }
 
 /* @param person true - nurich
