@@ -57,7 +57,8 @@ bot.onText(/^\d{1,2}\.\d{1,2}\.\d{1,4}$/, function (msg, match) {
     	date = match[0],
     	nurich = shift.nurich(date),
     	papa = shift.papa(date),
-    	text = (typeof nurich != 'undefined') ? date+' Нурич '+nurich+', а папа '+papa : 'Неверная дата';
+        week = shift.week(date),
+    	text = (typeof nurich != 'undefined') ? date+' ('+week+') Нурич '+nurich+', а папа '+papa : 'Неверная дата';
 
     bot.sendMessage(chatId, text);
 

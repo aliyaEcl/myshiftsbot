@@ -11,6 +11,12 @@ var papa = function(date) {
 	return shifts[getPerson(date,false)];
 }
 
+var week = function(date) {
+	var target_date = (typeof date =='string') ? new Date(convertDate(date)) : date,
+		days = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+	return days[target_date.getDay()];
+}
+
 /* @param person true - nurich
 				 false - papa
 */
@@ -125,3 +131,4 @@ module.exports.nurich = nurich;
 module.exports.papa = papa;
 module.exports.createDoc = createDoc;
 module.exports.convertDate = convertDate;
+module.exports.week = week;
